@@ -1,18 +1,27 @@
 #!/bin/sh
 
-PFX=outernet-lband-manual-v
+# both paths _must_ be absolute!
 SOURCE=/usr/doc
-TARGET=/mnt/downloads
+DEST=/mnt/downloads
 
-findmans() {
-  dir="$1"
-  echo $(cd "$dir"; find -name "${PFX}*.pdf")
-}
+# files in $SOURCE should have version numbers in their name
+# _exactly like so: vnn.nn - eg. v04.32
 
-tgt_man="$(findmans "$TARGET")"
-src_man="$(findmans "$SOURCE")"
-latest="$(echo -e "$tgt_man\n$src_man" | sort -r | head -n1)"
-if [ "$latest" == "$src_man" ]; then
-  rm "$TARGET/${PFX}"*.pdf
-  cp "$SOURCE/${PFX}"*.pdf "$TARGET"
-fi
+cd "$SOURCE"
+for i in *
+do
+        cd "$DEST"
+        target="${i/ v??.??./ v??.??.}"
+        target_globbed="$(eval echo ${target// /\\ })"
+        if [ -f "$target_globbed" ]
+        then
+                if [ "${target_globbed}" "<" "${i}" ]
+                then
+                        rm "${target_globbed}"
+                        cp "$SOURCE/${i}" .
+                fi
+        else
+                cp "$SOURCE/${i}" .
+        fi
+done
+

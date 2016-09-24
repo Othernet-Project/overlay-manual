@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-VERSION=2.02
+VERSION=2.03
 OVERLAY_NAME=manual
 OVERLAY_FILE=overlay-$(OVERLAY_NAME)-$(VERSION).sqfs
 SOURCE := overlay
